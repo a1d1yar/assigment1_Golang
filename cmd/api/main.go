@@ -14,7 +14,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type configuration struct {
+type config struct {
 	port int
 	env  string
 	db   struct {
@@ -23,42 +23,42 @@ type configuration struct {
 }
 
 type application struct {
-	config   configuration
-	logger   *log.Logger
-	database *data.DBModel
+	config config
+	logger *log.Logger
+	db     *data.DBModel
 }
 
 func main() {
-	var cfg configuration
+	var cfg config
 
-	flag.IntVar(&cfg.port, "port", 5432, "API server port")
+	flag.IntVar(&cfg.port, "port", 4000, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
-	flag.StringVar(&cfg.db.dsn, "db-dsn", "postgres://postgres:Aldiyar2004@localhost:5432/a.maratovDB?sslmode=disable", "PostgreSQL DSN")
+	flag.StringVar(&cfg.db.dsn, "db-dsn", "postgres://postgres:lbfc2005@localhost:5432/d.ibragimovDB?sslmode=disable", "PostgreSQL DSN")
 
 	flag.Parse()
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	db, err := openDatabase(cfg)
+	db, err := openDB(cfg)
 	if err != nil {
 		logger.Fatal(err)
 	}
 
 	defer db.Close()
 
-	logger.Printf("Database connection pool established")
+	logger.Printf("database connection pool established")
 
 	dbModel := &data.DBModel{
 		DB: db,
 	}
 
 	app := &application{
-		config:   cfg,
-		logger:   logger,
-		database: dbModel,
+		config: cfg,
+		logger: logger,
+		db:     dbModel,
 	}
 
-	server := &http.Server{
+	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.port),
 		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
@@ -66,12 +66,12 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	logger.Printf("Starting %s server on %s", cfg.env, server.Addr)
-	err = server.ListenAndServe()
+	logger.Printf("starting %s server on %s", cfg.env, srv.Addr)
+	err = srv.ListenAndServe()
 	logger.Fatal(err)
 }
 
-func openDatabase(cfg configuration) (*sql.DB, error) {
+func openDB(cfg config) (*sql.DB, error) {
 	db, err := sql.Open("postgres", cfg.db.dsn)
 	if err != nil {
 		return nil, err
