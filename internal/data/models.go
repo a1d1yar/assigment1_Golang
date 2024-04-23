@@ -10,6 +10,9 @@ import (
 type DBModel struct {
 	DB *sql.DB
 }
+type Models struct {
+	Users UserModel
+}
 
 func (m *DBModel) Insert(moduleInfo *ModuleInfo) error {
 	_, err := m.DB.Exec("INSERT INTO module_info (created_at, updated_at, module_name, module_duration, exam_type, version) VALUES ($1, $2, $3, $4, $5, $6)",
