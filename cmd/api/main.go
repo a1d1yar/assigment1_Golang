@@ -33,7 +33,7 @@ func main() {
 
 	flag.IntVar(&cfg.port, "port", 4000, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
-	flag.StringVar(&cfg.db.dsn, "db-dsn", "postgres://postgres:lbfc2005@localhost:5432/d.ibragimovDB?sslmode=disable", "PostgreSQL DSN")
+	flag.StringVar(&cfg.db.dsn, "db-dsn", "postgres://postgres:Aldiyar2004@localhost:5432/a,maratovDB?sslmode=disable", "PostgreSQL DSN")
 
 	flag.Parse()
 

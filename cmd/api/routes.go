@@ -1,20 +1,17 @@
 package main
+...
+func (app *application) routes() http.Handler {
+router := httprouter.New()
+router.NotFound = http.HandlerFunc(app.notFoundResponse)
+router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
+router.HandlerFunc(http.MethodGet, "/v1/healthcheck", app.healthcheckHandler)
+router.HandlerFunc(http.MethodGet, "/v1/movies", app.listMoviesHandler)
+router.HandlerFunc(http.MethodPost, "/v1/movies", app.createMovieHandler)
+router.HandlerFunc(http.MethodGet, "/v1/movies/:id", app.showMovieHandler)
+router.HandlerFunc(http.MethodPatch, "/v1/movies/:id", app.updateMovieHandler)
+router.HandlerFunc(http.MethodDelete, "/v1/movies/:id", app.deleteMovieHandler)
 
-import (
-	"net/http"
+router.HandlerFunc(http.MethodPost, "/v1/users", app.registerUserHandler)
+return app.recoverPanic(app.rateLimit(router))
 
-	"github.com/julienschmidt/httprouter"
-)
-
-func (app *application) routes() *httprouter.Router {
-	router := httprouter.New()
-
-	router.NotFound = http.HandlerFunc(app.notFoundResponse)
-	router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
-	router.HandlerFunc(http.MethodPost, "/v1/moduleinfo", app.createModuleInfoHandler)
-	router.HandlerFunc(http.MethodGet, "/v1/moduleinfo/:id", app.getModuleInfoHandler)
-	router.HandlerFunc(http.MethodPut, "/v1/moduleinfo/:id", app.editModuleInfoHandler)
-	router.HandlerFunc(http.MethodDelete, "/v1/moduleinfo/:id", app.deleteModuleInfoHandler)
-
-	return router
 }
