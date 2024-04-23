@@ -2,6 +2,7 @@ package data
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	_ "github.com/lib/pq"
@@ -13,6 +14,11 @@ type DBModel struct {
 type Models struct {
 	Users UserModel
 }
+
+var (
+	ErrRecordNotFound = errors.New("record not found")
+	ErrEditConflict   = errors.New("edit conflict")
+)
 
 func NewModels(db *sql.DB) Models {
 	return Models{
