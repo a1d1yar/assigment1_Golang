@@ -190,3 +190,61 @@ func (m UserModel) Update(user *User) error {
 	}
 	return nil
 }
+func (m *DBModel) GetUserInfoByID(id string) (*UserInfo, error) {
+	var userInfo UserInfo
+	query := `
+        SELECT id, name, email, activated
+        FROM user_info
+        WHERE id = $1
+    `
+	row := m.DB.QueryRow(query, id)
+	err := row.Scan(&userInfo.ID, &userInfo.Name, &userInfo.Email, &userInfo.Activated)
+	if err != nil {
+		return nil, err
+	}
+	return &userInfo, nil
+}
+func (m *DBModel) GetAllUserInfo() ([]UserInfo, error) {
+	var userInfos []UserInfo
+	query := `
+        SELECT id, name, email, activated
+        FROM user_info
+    `
+	rows, err := m.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userInfo UserInfo
+		err := rows.Scan(&userInfo.ID, &userInfo.Name, &userInfo.Email, &userInfo.Activated)
+		if err != nil {
+			return nil, err
+		}
+		userInfos = append(userInfos, userInfo)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return userInfos, nil
+}
+func (m *DBModel) UpdateUserInfo(id string, userInfo *UserInfo) error {
+	query := `
+        UPDATE user_info
+        SET name = $1, email = $2, activated = $3
+        WHERE id = $4
+    `
+	_, err := m.DB.Exec(query, userInfo.Name, userInfo.Email, userInfo.Activated, id)
+	return err
+}
+func (m *DBModel) DeleteUserInfo(id string) error {
+	query := `
+        DELETE FROM user_info
+        WHERE id = $1
+    `
+	_, err := m.DB.Exec(query, id)
+	return err
+}

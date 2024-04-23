@@ -60,24 +60,3 @@ func (m *DBModel) Delete(id int) error {
 	}
 	return nil
 }
-
-// Defence
-
-func (m *DBModel) InsertDepartmentInfo(depInfo *DepartmentInfo) error {
-	err := m.DB.QueryRow("INSERT INTO department_info (department_name, staff_quantity, department_director, module_id) VALUES ($1, $2, $3, $4) RETURNING id",
-		depInfo.DepartmentName, depInfo.StaffQuantity, depInfo.DepartmentDirector, depInfo.ModuleID).Scan(&depInfo.ID)
-	if err != nil {
-		return fmt.Errorf("failed to insert department info: %w", err)
-	}
-	return nil
-}
-
-func (m *DBModel) RetrieveDepartmentInfo(id int) (*DepartmentInfo, error) {
-	var departmentInfo DepartmentInfo
-	row := m.DB.QueryRow("SELECT id, department_name, staff_quantity, department_director, module_id FROM department_info WHERE id = $1", id)
-	err := row.Scan(&departmentInfo.ID, &departmentInfo.DepartmentName, &departmentInfo.StaffQuantity, &departmentInfo.DepartmentDirector, &departmentInfo.ModuleID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to retrieve department info: %w", err)
-	}
-	return &departmentInfo, nil
-}

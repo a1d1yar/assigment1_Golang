@@ -73,36 +73,3 @@ func (app *application) deleteModuleInfoHandler(w http.ResponseWriter, r *http.R
 
 	app.writeJSON(w, http.StatusOK, envelope{"message": "ModuleInfo deleted successfully"}, nil)
 }
-
-// Defence
-
-func (app *application) createDepartmentInfoHandler(w http.ResponseWriter, r *http.Request) {
-	var departmentInfo data.DepartmentInfo
-	if err := app.readJSON(w, r, &departmentInfo); err != nil {
-		app.badRequestResponse(w, r, err)
-		return
-	}
-
-	if err := app.db.InsertDepartmentInfo(&departmentInfo); err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-
-	app.writeJSON(w, http.StatusCreated, envelope{"department_info": departmentInfo}, nil)
-}
-
-func (app *application) getDepartmentInfoHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := app.readIDParam(r)
-	if err != nil {
-		app.notFoundResponse(w, r)
-		return
-	}
-
-	departmentInfo, err := app.db.RetrieveDepartmentInfo(int(id))
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-
-	app.writeJSON(w, http.StatusOK, envelope{"department_info": departmentInfo}, nil)
-}
