@@ -14,6 +14,11 @@ type Models struct {
 	Users UserModel
 }
 
+func NewModels(db *sql.DB) Models {
+	return Models{
+		Users: UserModel{DB: db}, // Initialize a new UserModel instance.
+	}
+}
 func (m *DBModel) Insert(moduleInfo *ModuleInfo) error {
 	_, err := m.DB.Exec("INSERT INTO module_info (created_at, updated_at, module_name, module_duration, exam_type, version) VALUES ($1, $2, $3, $4, $5, $6)",
 		moduleInfo.CreatedAt, moduleInfo.UpdatedAt, moduleInfo.ModuleName, moduleInfo.ModuleDuration, moduleInfo.ExamType, moduleInfo.Version)
