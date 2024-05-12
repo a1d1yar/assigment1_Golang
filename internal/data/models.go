@@ -12,7 +12,8 @@ type DBModel struct {
 	DB *sql.DB
 }
 type Models struct {
-	Users UserModel
+	Users  UserModel
+	Tokens TokenModel
 }
 
 var (
@@ -22,7 +23,9 @@ var (
 
 func NewModels(db *sql.DB) Models {
 	return Models{
-		Users: UserModel{DB: db}, // Initialize a new UserModel instance.
+
+		Tokens: TokenModel{DB: db}, // Initialize a new TokenModel instance.
+		Users:  UserModel{DB: db},
 	}
 }
 func (m *DBModel) Insert(moduleInfo *ModuleInfo) error {

@@ -1,18 +1,16 @@
 package data
 
-import (
-	"time"
-)
+import "time"
 
 type UserInfo struct {
-	ID           uint      `json:"id"`
+	ID           int       `json:"id"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 	Name         string    `json:"name"`
 	Surname      string    `json:"surname"`
 	Email        string    `json:"email"`
-	PasswordHash string    `json:"-"`
+	PasswordHash string    `json:"password_hash"`
 	Role         string    `json:"role"`
 	Activated    bool      `json:"activated"`
-	Version      uint      `json:"version"`
+	Version      int       `json:"version"`
 }
